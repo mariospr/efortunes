@@ -1,0 +1,8 @@
+0.1 (02 Nov 2006)
+
+  * List, create, edit or remove fortunes from server
+  * Underlying distributed persistence layer based on the Mnesia DBMS
+  * Easy access to the services offered by efortunes by using a simple
+    web interface (powered by yaws)
+  * Internationalization (i18n) support for the implementation of the
+    web interface

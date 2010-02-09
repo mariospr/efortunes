@@ -1,0 +1,118 @@
+<!--
+
+ Copyright (C) 2006 Mario Sánchez Prada (msanchez@igalia.com)
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of version 2 of the GNU General Public
+ License as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+
+ You should have received a copy of the GNU General Public
+ License along with this program; if not, write to the
+ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.
+
+ Author: Mario Sánchez Prada (msanchez@igalia.com)
+-->
+
+<erl>
+-include("efortunes_definitions.hrl").
+% Load messages for this web page
+out(A) ->    
+    {bindings, 
+     [{"HEADER", ?MESSAGES_TRADER:getMessage(listAllFortunes_header)}]}.
+</erl>
+
+<!-- HEADER -->
+<erl>
+out(A) -> {yssi, "header.yaws"}.
+</erl>
+
+<div id="content">
+
+<div id="pageTitle">
+%%HEADER%%
+</div>
+
+
+<erl>
+-include("efortunes_records.hrl").
+-include("efortunes_definitions.hrl").
+
+out(Args) ->
+    case ?EFORTUNES_FACADE:find_all_fortunes() of
+	{ok, Fortunes} ->
+	    case Fortunes of 
+		[] -> % Empty list
+		    NoFortunesMsg = ?MESSAGES_TRADER:getMessage(listAllFortunes_none),
+		    {ehtml, {p, [{class, "infoMsg"}], NoFortunesMsg}};		    
+		_ ->
+  	            {ehtml, printResult(Fortunes)}
+	    end;
+        Error={ErrorType, Reason} ->
+	    ?YAWS_UTILS:buildErrorRedirect(?ERROR_PAGE_URL, ErrorType, Reason)
+    end.
+
+printResult(Fortunes) ->
+
+    % Get needed messages
+    EditMsg = ?MESSAGES_TRADER:getMessage(listAllFortunes_edit),
+    RemoveMsg = ?MESSAGES_TRADER:getMessage(listAllFortunes_remove),
+
+    % Data extraction functions
+    GetAuthor_fun = fun(Fortune) -> Fortune#fortune.author end,
+    GetDate_fun = fun(Fortune) -> Fortune#fortune.date end,
+    GetTime_fun = fun(Fortune) -> Fortune#fortune.time end,
+    GetContent_fun = fun(Fortune) -> Fortune#fortune.content end,
+    GetEditFortune_fun = fun(Fortune) ->
+	    {EditMsg, 
+	     "editFortune.yaws", 
+	     [{"fortuneId", integer_to_list(Fortune#fortune.id)}]} 
+    end,
+    GetRemoveFortune_fun = fun(Fortune) ->
+	    {RemoveMsg, 
+	     "doRemoveFortune.yaws", 
+	     [{"fortuneId", integer_to_list(Fortune#fortune.id)}]} 
+    end,
+
+    ?HTML_FORMATTING:formatTable(
+      % Data
+      Fortunes,
+
+      % Column headers
+      [
+       ?MESSAGES_TRADER:getMessage(listAllFortunes_author),
+       ?MESSAGES_TRADER:getMessage(listAllFortunes_date),
+       ?MESSAGES_TRADER:getMessage(listAllFortunes_time),
+       ?MESSAGES_TRADER:getMessage(listAllFortunes_content),
+       "", ""
+      ],
+
+      % Columns data extraction functions
+      [GetAuthor_fun, GetDate_fun, GetTime_fun, GetContent_fun, GetEditFortune_fun, GetRemoveFortune_fun],
+
+      % Columns data formatting functions
+      [
+       fun ?HTML_FORMATTING:formatString/1,
+       fun ?HTML_FORMATTING:formatDate/1,
+       fun ?HTML_FORMATTING:formatTime/1,
+       fun ?HTML_FORMATTING:formatString/1,
+       fun ?HTML_FORMATTING:formatLink/1,
+       fun ?HTML_FORMATTING:formatLink/1
+      ],
+
+       % Style for the listing table
+       ?LISTING_TABLE_STYLE
+     ).
+</erl>
+
+</div> <!-- CONTENT -->
+
+<!-- FOOTER -->
+<erl>
+out(A) -> {yssi, "footer.yaws"}.
+</erl>

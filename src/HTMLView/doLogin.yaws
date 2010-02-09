@@ -1,0 +1,57 @@
+<!--
+
+ Copyright (C) 2006 Mario Sánchez Prada (msanchez@igalia.com)
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of version 2 of the GNU General Public
+ License as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+
+ You should have received a copy of the GNU General Public
+ License along with this program; if not, write to the
+ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.
+
+ Author: Mario Sánchez Prada (msanchez@igalia.com)
+-->
+
+<erl>
+-include("efortunes_definitions.hrl").
+
+-define(LOGIN_FIELD, "login").
+-define(PASSWORD_FIELD, "password").
+-define(URL_FIELD, "url").
+
+out(Args) ->
+
+    PostedValues = yaws_api:parse_post(Args),
+    Login = ?YAWS_UTILS:getFieldValue(PostedValues, ?LOGIN_FIELD),
+    Password = ?YAWS_UTILS:getFieldValue(PostedValues, ?PASSWORD_FIELD),
+    URL = ?YAWS_UTILS:getFieldValue(PostedValues, ?URL_FIELD),
+
+    %% Execute action: Use the session manager to log in using session cookies
+    case ?SESSION_MANAGER:login(Args, Login, Password, URL)                                                      of
+        {ok, Result} ->
+            Result;
+        {model_error, user_not_found} -> 			
+	    ?YAWS_UTILS:buildValidationErrorRedirect(?LOGIN_PAGE_URL, user_not_found, "login", getFormValues(Args));
+	{model_error, not_admin_user} ->
+	    ?YAWS_UTILS:buildValidationErrorRedirect(?LOGIN_PAGE_URL, not_admin_user, "login", getFormValues(Args));
+	{model_error, incorrect_password} ->
+	    ?YAWS_UTILS:buildValidationErrorRedirect(?LOGIN_PAGE_URL, incorrect_password, "password", getFormValues(Args));
+	{Error, Reason} ->
+	    ?YAWS_UTILS:buildErrorRedirect(?ERROR_PAGE_URL, Error, Reason)
+    end.
+
+% returns tuples with the values in the form
+getFormValues(Args) ->   
+    PostedValues = yaws_api:parse_post(Args),
+    case ?YAWS_UTILS:getFieldValue(PostedValues, ?LOGIN_FIELD) of
+	"undefined" -> [];
+	Login -> [{"login", Login}]
+    end.
+</erl>

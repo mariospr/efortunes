@@ -1,0 +1,19 @@
+#!/bin/bash
+
+#!/bin/bash
+
+# pre-create mnesia data dir if not created yet
+if [ ! -d @MNESIA_DIR@ ]; then 
+    mkdir @MNESIA_DIR@;
+fi
+
+# start storage nodes as daemons (detached)
+for NODE in @ALTERNATIVE_MNESIA_NODES@; do \
+    erl -detached -sname $NODE -mnesia dir "'@MNESIA_DIR@/${NODE}'" -setcookie @MAGIC_COOKIE@; \
+    echo "Storage node ${NODE} started"; \
+done
+
+# start main server
+#erl -sname @NODE_NAME@@@HOST_NAME@ -s efortunes_launcher start -pa ../ebin -mnesia dir "'@MNESIA_DIR@'" -setcookie @MAGIC_COOKIE@
+yaws -i -sname @NODE_NAME@@@HOST_NAME@ -r efortunes_launcher -c @TOP_FOLDER@/etc/yaws.conf -pa @TOP_FOLDER@/ebin -erlarg "-setcookie @MAGIC_COOKIE@ -mnesia dir '@MNESIA_DIR@'"
+echo "Main server ${SERVER_NODE} started"

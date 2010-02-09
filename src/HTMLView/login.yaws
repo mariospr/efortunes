@@ -1,0 +1,111 @@
+<!--
+
+ Copyright (C) 2006 Mario Sánchez Prada (msanchez@igalia.com)
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of version 2 of the GNU General Public
+ License as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+
+ You should have received a copy of the GNU General Public
+ License along with this program; if not, write to the
+ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.
+
+ Author: Mario Sánchez Prada (msanchez@igalia.com)
+-->
+
+<erl>
+-define(ERROR_PARAM, "error").
+-define(ERROR_INPUT_PARAM, "input").
+-define(LOGIN_VALUE_PARAM, "login").
+
+-include("efortunes_definitions.hrl").
+
+% Load messages for this web page
+out(Args) ->
+
+    Params = yaws_api:parse_query(Args),    
+
+    % handle possible validation errors
+    ValidationBindings = case ?YAWS_UTILS:getFieldValue(Params, ?ERROR_INPUT_PARAM) of
+	undefined ->
+	    getValidationBindings(Params,"",""); % do nothing
+	"login" ->
+	    ErrorCode = list_to_atom(?YAWS_UTILS:getFieldValue(Params, ?ERROR_PARAM)),
+	    LoginErrorMsg = ?MESSAGES_TRADER:getMessage(ErrorCode),
+	    getValidationBindings(Params, LoginErrorMsg, "");
+	"password" -> 
+	    ErrorCode = list_to_atom(?YAWS_UTILS:getFieldValue(Params, ?ERROR_PARAM)),
+	    PasswordErrorMsg = ?MESSAGES_TRADER:getMessage(ErrorCode),
+	    getValidationBindings(Params, "", PasswordErrorMsg)
+    end,
+
+    % Check redirect URL
+    RedirectInput = case Args#arg.state of
+	{abs_path, URL} -> ["<input type=\"hidden\" name=\"url\" value=\"", URL, "\">"];
+	_ -> []
+    end,
+    
+    {bindings, 
+     ValidationBindings ++
+      [{"LOGIN_LABEL", ?MESSAGES_TRADER:getMessage(login_loginName)},
+       {"PASSWORD_LABEL", ?MESSAGES_TRADER:getMessage(login_password)},
+       {"SUBMIT", ?MESSAGES_TRADER:getMessage(login_submit)},
+       {"REDIRECT_INPUT", RedirectInput}]}.
+
+getValidationBindings(Params, ErrorLogin, ErrorPassword) ->
+    LoginValue = case ?YAWS_UTILS:getFieldValue(Params, ?LOGIN_VALUE_PARAM) of
+	undefined -> "";
+	Value -> yaws_api:url_decode(Value)
+    end,
+    [{"LOGIN_VALUE", LoginValue}, 
+     {"ERROR_LOGIN", ErrorLogin}, 
+     {"ERROR_PASSWORD", ErrorPassword}].
+</erl>
+
+<!-- HEADER -->
+<erl>
+out(A) -> {yssi, "header.yaws"}.
+</erl>
+
+<div id="content">
+
+<form name="loginForm" action="doLogin.yaws" focus="login" method="POST">	
+<div class="field">		
+<span class="label">
+%%LOGIN_LABEL%%:
+</span>
+<span class="entry">	
+<input type="text" name="login" size="16" maxlength="30" value="%%LOGIN_VALUE%%"/>
+<span class="inlineError">%%ERROR_LOGIN%%</span>
+</span>
+</div>
+
+<div class="field">		
+<span class="label">
+%%PASSWORD_LABEL%%:
+</span>
+<span class="entry">	
+<input type="password" name="password" size="16" maxlength="30"/>
+<span class="inlineError">%%ERROR_PASSWORD%%</span>
+</span>
+</div>
+
+<div class="button">		
+<input type="submit" value="%%SUBMIT%%">
+</div>
+<!-- Hidden field for redirect to the original url, if needed -->
+%%REDIRECT_INPUT%%
+
+</form>
+</div> <!-- CONTENT -->
+
+<!-- FOOTER -->
+<erl>
+out(A) -> {yssi, "footer.yaws"}.
+</erl>

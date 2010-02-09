@@ -1,0 +1,175 @@
+<!--
+
+ Copyright (C) 2006 Mario Sánchez Prada (msanchez@igalia.com)
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of version 2 of the GNU General Public
+ License as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+
+ You should have received a copy of the GNU General Public
+ License along with this program; if not, write to the
+ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.
+
+ Author: Mario Sánchez Prada (msanchez@igalia.com)
+-->
+
+<erl>
+-include("efortunes_definitions.hrl").
+-include("efortunes_records.hrl").
+
+-define(ID_PARAM, "fortuneId").
+
+% Load messages for this web page
+out(Args) ->    
+
+    Params = yaws_api:parse_query(Args),
+    Id = ?YAWS_UTILS:getFieldValue(Params, ?ID_PARAM),
+
+    % find fortune
+    case ?EFORTUNES_FACADE:find_fortune(list_to_integer(Id)) of
+        {ok, Fortune} ->
+
+	    % For being able to access date and time to initialize combo boxes
+	    ?SESSION_MANAGER:setStaticData(Args, Fortune),
+
+	    % Just for initializing the only hidden field
+	    {_Hour, _Minute, Second} = Fortune#fortune.time,
+	    
+	    % build bindings
+	    {bindings, 
+	     [
+	      {"HEADER", ?MESSAGES_TRADER:getMessage(editFortune_header)},
+	      {"AUTHOR", ?MESSAGES_TRADER:getMessage(editFortune_author)},
+	      {"CONTENT", ?MESSAGES_TRADER:getMessage(editFortune_content)},
+	      {"DAY", ?MESSAGES_TRADER:getMessage(editFortune_day)},
+	      {"MONTH", ?MESSAGES_TRADER:getMessage(editFortune_month)},
+	      {"YEAR", ?MESSAGES_TRADER:getMessage(editFortune_year)},
+	      {"HOUR", ?MESSAGES_TRADER:getMessage(editFortune_hour)},
+	      {"MINUTE", ?MESSAGES_TRADER:getMessage(editFortune_minute)},
+	      {"SUBMIT", ?MESSAGES_TRADER:getMessage(editFortune_submit)},
+
+	      {"FORTUNE_ID", Id},
+	      {"AUTHOR_VALUE", Fortune#fortune.author},
+	      {"CONTENT_VALUE", Fortune#fortune.content},
+	      {"SECOND_VALUE", integer_to_list(Second)}
+	     ]
+	    };
+	{Error, Reason} -> % If an error ocurrs, show error
+	    ?YAWS_UTILS:buildErrorRedirect(?ERROR_PAGE_URL, Error, Reason)
+    end.
+</erl>
+
+<!-- VALIDATION SCRIPT -->
+<script type="text/javascript" src="/javascript/validation.js" />
+
+<!-- HEADER -->
+<erl>
+out(A) -> {yssi, "header.yaws"}.
+</erl>
+
+<div id="content">
+
+<div id="pageTitle">
+%%HEADER%%
+</div>
+
+<!-- Static content -->
+<form action="doUpdateFortune.yaws" method="post" 
+      onsubmit="return validateUpdateFortuneForm(this)">
+
+  <div class="field">
+    <span class="label">%%AUTHOR%%: </span>
+    <span class="entry">
+      <input type="text" name="author" value="%%AUTHOR_VALUE%%">
+      <span id="authorError" class="inlineError"></span>
+    </span>
+  </div>
+  <div class="field">
+    <span class="label">%%CONTENT%%: </span>
+    <span class="entry">
+      <textarea name="content" rows="4" cols="30">%%CONTENT_VALUE%%</textarea>
+      <span id="contentError" class="inlineError"></span>
+    </span>
+  </div>
+  <div class="field">
+    <div class="dateandtime">
+       <span class="label">%%DAY%%:</span>
+       <span class="entry">
+          <erl>
+            -include("efortunes_definitions.hrl").
+            -include("efortunes_records.hrl").
+            out(A) -> 
+              Fortune = ?SESSION_MANAGER:getStaticData(A), 
+              {_Year, _Month, Day} = Fortune#fortune.date,
+              ?HTML_FORMATTING:formatNumericalSelector("day", 1, 31, Day).
+	  </erl>
+       </span>
+       <span class="label">%%MONTH%%:</span>
+       <span class="entry">
+          <erl>
+            -include("efortunes_definitions.hrl").
+            -include("efortunes_records.hrl").
+	    out(A) -> 
+              Fortune = ?SESSION_MANAGER:getStaticData(A), 
+              {_Year, Month, _Day} = Fortune#fortune.date,
+              ?HTML_FORMATTING:formatMonthSelector("month", 1, 12, Month).
+	  </erl>
+       </span>
+       <span class="label">%%YEAR%%:</span>
+       <span class="entry">
+          <erl>
+            -include("efortunes_definitions.hrl").
+            -include("efortunes_records.hrl").
+	    out(A) -> 
+              Fortune = ?SESSION_MANAGER:getStaticData(A), 
+              {Year, _Month, _Day} = Fortune#fortune.date,
+              ?HTML_FORMATTING:formatNumericalSelector("year", 2006, 2038, Year).
+	  </erl>
+       </span>
+    </div>
+  </div>
+  <div class="field">
+    <div class="dateandtime">
+       <span class="label">%%HOUR%%:</span>
+       <span class="entry">
+         <erl>
+            -include("efortunes_definitions.hrl").
+            -include("efortunes_records.hrl").
+           out(A) -> 
+              Fortune = ?SESSION_MANAGER:getStaticData(A), 
+              {Hour, _Minute, _Second} = Fortune#fortune.time,
+              ?HTML_FORMATTING:formatNumericalSelector("hour", 0, 23, Hour).
+         </erl>
+       </span>
+       <span class="label">%%MINUTE%%:</span>
+       <span class="entry">
+         <erl>
+            -include("efortunes_definitions.hrl").
+            -include("efortunes_records.hrl").
+	   out(A) -> 
+              Fortune = ?SESSION_MANAGER:getStaticData(A), 
+              {_Hour, Minute, _Second} = Fortune#fortune.time,
+              ?HTML_FORMATTING:formatNumericalSelector("minute", 0, 59, Minute).
+	 </erl>
+       </span>
+       <input type="hidden" name="second" value="%%SECOND_VALUE%%">
+       <input type="hidden" name="fortuneId" value="%%FORTUNE_ID%%"> 
+    </div>
+  </div>
+  <div class="button">		
+    <input type="submit" value="%%SUBMIT%%">
+  </div>
+</form>
+
+</div> <!-- content -->
+
+<!-- FOOTER -->
+<erl>
+out(A) -> {yssi, "footer.yaws"}.
+</erl>

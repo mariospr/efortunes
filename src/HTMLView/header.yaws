@@ -1,0 +1,67 @@
+<!--
+
+ Copyright (C) 2006 Mario Sánchez Prada (msanchez@igalia.com)
+
+ This program is free software; you can redistribute it and/or
+ modify it under the terms of version 2 of the GNU General Public
+ License as published by the Free Software Foundation.
+
+ This program is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ General Public License for more details.
+
+ You should have received a copy of the GNU General Public
+ License along with this program; if not, write to the
+ Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+ Boston, MA 02111-1307, USA.
+
+ Author: Mario Sánchez Prada (msanchez@igalia.com)
+-->
+
+<erl>
+-include("efortunes_definitions.hrl").
+% Load messages for this web page
+out(A) ->    
+    {bindings, 
+     [
+      {"TITLE", ?MESSAGES_TRADER:getMessage(header_title)},
+      {"SUBTITLE", ?MESSAGES_TRADER:getMessage(header_subtitle)}
+     ]}.
+</erl>
+
+<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
+<html>
+
+<head>
+<title>%%TITLE%% - %%SUBTITLE%%</title>
+<meta name="Description" content="Erlang betting server">
+<meta name="Keywords" content="Erlang, yaws, betting">
+<meta name="generator" content="Bluefish 1.0.4">
+<meta http-equiv="content-type" content="text/html; charset=ISO-8859-1">
+
+<link rel="StyleSheet" href="/styles.css" type="text/css" media="all"/>
+
+<!-- VALIDATION SCRIPTS -->
+<script type="text/javascript" src="/javascript/validation.js" />
+</head>
+
+<body>
+
+<div id="window">
+
+<!-- TITLE -->
+<div id="title">
+<h1>%%TITLE%%</h1>
+<h2>%%SUBTITLE%%</h2>
+</div> 
+
+<!-- STATUSBAR -->
+<erl>
+out(A) -> {yssi, "statusbar.yaws"}.
+</erl>
+
+<!-- SIDEBAR -->
+<erl>
+out(A) -> {yssi, "sidebar.yaws"}.
+</erl>

@@ -1,0 +1,21 @@
+EMULATOR=beam
+EBIN=ebin
+INCLUDE=include
+
+all: src-subdir
+
+src-subdir:
+	cd src; \
+	make EBIN=../$(EBIN) \
+		INCLUDE=../$(INCLUDE) \
+		EMULATOR=$(EMULATOR); \
+	cd ../bin; chmod u+x efortunes_run.sh
+
+distclean: clean
+
+clean:
+	cd src; \
+	make clean EBIN=../$(EBIN) EMULATOR=$(EMULATOR);
+
+doc:
+	cd src; make doc

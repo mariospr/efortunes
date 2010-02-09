@@ -1,0 +1,350 @@
+/* ESTILOS GLOBALES */
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 14px;
+    padding: 2px;
+}
+
+a {
+    font-weight: bold;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+p.info {
+    font-size: 16px;
+}
+
+
+/* Formularios. */
+form {
+    width: 100%;
+}
+
+div.field {
+    clear: both;
+    padding-top: 1em;
+    width: 100%;
+}
+
+div.field span.label {
+    float: left;    
+    text-align: right;
+    font-weight: bold;
+    width: 49.5%;
+}
+
+div.field span.entry {
+    float: right;    
+    text-align: left;
+    width: 49.5%;
+}
+
+div.field div.dateandtime{
+    float: left;    
+    text-align: center;
+    font-weight: bold;
+    width: 100%;
+    margin-bottom: 2%;
+}
+
+div.field div.dateandtime span.label { 
+    float: none;    
+    text-align: right;
+    font-weight: bold;
+    margin-left: 2px;
+}
+
+div.field div.dateandtime span.entry { 
+    float: none;    
+    text-align: left;
+    margin-right: 2px;
+}
+
+div.button {
+    clear: both;
+    padding-top: 1em;
+    text-align: center;
+    width: 100%;
+}
+
+input, select, textarea  {
+    background-color: #f4f4f4;
+}
+/* Fin formularios. */
+
+/* Mensajes de confirmacion y error */
+span.inlineError {
+    font-weight: bold;
+    color: red;
+    margin-left: 5px;
+    text-indent: 0%;
+}
+
+p.errorMsg {
+   color: red;
+   font-weight: bold;
+   font-size: medium;
+   text-align: center;
+}
+
+p.confirmMsg {
+   color: green;
+   font-weight: bold;
+   font-size: medium;
+   text-align: center;
+}
+
+p.infoMsg {
+   color: black;
+   font-weight: normal;
+   font-size: medium;
+   text-align: center;
+}
+/* Fin mensajes de confirmacion y error */
+
+/* DIVS */
+
+#window {
+    background-color: white;
+    width: 100%;
+}
+
+#title {
+    border-top: 2px solid black;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    border-left: 2px solid black;
+    background-color: #555753;
+    color: white;
+    text-align:center;
+    width: 99%;
+    margin: 0px;
+    padding: 3px;
+}
+
+#title h1 {  
+   font-weight: bold;
+   font-size: large;
+   margin-top: 5px;
+   margin-bottom: 2px;
+}
+
+#title h2 {
+   font-weight: bold;
+   font-size: small;
+   margin-top: 2px;
+   margin-bottom: 5px;
+}
+
+#statusBar {
+    border-top: 0px solid black;
+    border-bottom: 2px solid black;
+    border-right: 2px solid black;
+    border-left: 2px solid black;
+    background-color: #bbbbba;
+    color: black;
+    text-align:center;
+    font-size: small;
+    width: 99%;
+    height: 3%;
+    margin: 0px;
+    padding: 3px;
+}
+
+#statusBar div.greeting {
+  width: 48%;
+  float: left;
+  text-align:left;
+  padding-left: 5px;
+                         
+}
+
+#statusBar span.login {
+  color: green;
+  font-weight: bold;
+}
+
+#statusBar div.logout {
+  width: 48%;
+  float:right;
+  text-align: right;
+}
+
+#sidebar {
+    margin-top: 2px;
+    margin-bottom: 2px;
+    float: left;
+    padding-top: 0px;
+    color: black;
+    text-align: center;
+    width: 15%;
+    background-color:  white;
+}
+
+#sidebar ul {
+	list-style: none;
+	margin : 3px;
+	padding : 0;
+	background-color: #888a85;
+        border: none
+}
+
+#sidebar ul li a {
+
+   border: 0.5px solid black;
+   margin : 0px;
+   text-decoration: none;
+   display: block;
+   width: 88%;
+   padding: 6px 6%;
+   font: bold 9pt/1.5 arial, sans-serif;
+   color: white;
+   background:  #888a85;
+}
+
+#sidebar ul li a:hover {
+   background-color: #babdb6;
+   color: black; 
+}
+
+#sidebar li {
+	padding: 0px 0px 0px 0px;
+}
+
+#pageTitle {
+    letter-spacing: 0.1em;
+    font-size: 17px;
+    color: black;
+    text-align: center;
+    font-weight: bold;
+    margin: 0px 5px 20px 5px;
+    width: 100%;
+}
+
+#contextualInfo  {
+    font-size: 14px;
+    color: black;
+    text-align: center;
+    width: 100%;
+    margin: 15px 5px 40px 5px;
+}
+
+#contextualInfo div.field {
+    width: 100%;
+    clear: both;     
+    font-weight: bold;
+    padding: 5px 0px 0px 0px;
+}
+
+#contextualInfo div.field span.label {
+    float: left;    
+    text-align: right;
+    width: 49%;
+    padding: 3px 0px 3px 0px;
+}
+
+#contextualInfo div.field span.value {
+    float: left;    
+    text-align: left;
+    color: green;
+    border: 1px solid black;
+    margin-left: 10px;
+    padding: 3px;
+}
+
+#content {
+   padding-top: 20px;   
+   padding-bottom: 10px;
+   padding-right: 2.5%;
+   padding-left: 2.5%;
+   margin: 5px;
+   margin-right: 0px;
+   float: right;    
+   text-align:justify;
+   background-color: white;
+   width: 79%;
+   min-height: 120px;
+   border: 1px solid black;
+}
+
+#content h1 {  
+   font-weight: bold;
+   font-size: large;
+}
+
+#content h2 {
+   font-weight: bold;
+   font-size: medium;
+}
+
+#content h4 {
+   font-weight: bold;
+   font-size: small;
+}
+
+#content p {
+	text-indent:2em;
+	/* background:#E4FF9B; */
+}
+
+/* Tablas */
+#content table.listing {
+	margin-left: auto;
+	margin-right: auto;
+        margin-top: 0px;
+        margin-bottom: 10px;
+	border: none;
+	font-size: 9pt;
+	text-align: center;
+        width: 90%;
+}
+
+#content table.listing th {
+  padding: 5px;
+  color: white;
+  background-color: green;
+  border: 1px solid black;
+}
+
+#content table.listing td {
+  color: black;
+  background-color: #d3d7cf;
+  padding: 5px;
+  font-size: 8pt;
+  font-weight: normal;
+  border: 1px solid black;
+}
+
+#content table.listing td a {
+	display: block;
+	width: 100%;
+	text-decoration: none;
+        font-weight: normal;
+	color: blue;
+}
+
+#content table.listing td a:hover {
+   color: red; 
+}
+
+/* Fin tablas */
+
+#footer {
+    border-top: 1px solid black;
+    border-bottom: 1px solid black;
+    border-right: 1px solid black;
+    border-left: 1px solid black;
+    background-color: #d3d7cf;
+    color: black;
+    text-align:center;
+    font-weight: normal;
+    font-size: small;
+    width: 99%;
+    margin: 0px;
+    padding: 3px;   
+    clear: both;
+}

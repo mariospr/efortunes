@@ -1,0 +1,53 @@
+INCLUDE_DOS= -I $(INCLUDE) -I @YAWS_INCLUDE@
+SUBDIRS=
+
+ERL_COMPILE_FLAGS += $(INCLUDE_DOS)  @ERLANG_FLAGS@
+
+DOC_OPTS=[{title,"Welcome to efortunes template"}]
+APPNAME=efortunes
+
+SOURCES=efortunes_action_addFortune.erl \
+efortunes_action_findAllFortunes.erl \
+efortunes_action_findFortune.erl \
+efortunes_action_login.erl \
+efortunes_action_logout.erl \
+efortunes_action_removeFortune.erl \
+efortunes_action_updateFortune.erl \
+efortunes_app.erl \
+efortunes_dao_fortune.erl \
+efortunes_dao_userProfile.erl \
+efortunes_dateOperations.erl \
+efortunes_dbManager.erl \
+efortunes_facade.erl \
+efortunes_HTMLFormatting.erl \
+efortunes_httpRequestProcessor.erl \
+efortunes_httpSessionManager.erl \
+efortunes_launcher.erl \
+efortunes_messagesTrader.erl \
+efortunes_super.erl \
+efortunes_viewUtils.erl \
+efortunes_yawsUtils.erl \
+mnesia_actionProcessor.erl \
+mnesia_utils.erl
+
+OBJECTS=$(SOURCES:%.erl=$(EBIN)/%.$(EMULATOR))
+
+.SUFFIXES: .erl .$(EMULATOR) 
+
+all: subdirs $(OBJECTS)
+
+subdirs:
+	@for dir in $(SUBDIRS); do \
+		(cd $$dir; $(MAKE) $(MAKETARGET) EBIN=../$(EBIN) \
+			INCLUDE=../$(INCLUDE_DOS) \
+			EMULATOR=$(EMULATOR)); \
+	done
+
+clean:
+	-rm -f $(EBIN)/*.$(EMULATOR)
+
+$(EBIN)/%.$(EMULATOR):%.erl
+	erlc -W $(ERL_COMPILE_FLAGS) -o$(EBIN) $<
+
+doc:
+	erl  -noshell -pa $(EBIN) @EDOC_DIR@ -ru\n edoc_run application $(APPNAME) '".."' '$(DOC_OPTS)' -s erlang halt

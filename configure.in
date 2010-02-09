@@ -1,0 +1,38 @@
+AC_INIT(efortunes, 0.0.1, efortunes@localhost)
+
+########################################################
+## Erlang variables
+########################################################
+
+ERLANG_FLAGS=""
+#ERLANG_FLAGS="+debug_info +nowarn_shadow_vars +warn_unused_import +nowarn_unused_vars"
+AC_SUBST(ERLANG_FLAGS)
+
+TOP_FOLDER=`pwd`
+AC_SUBST(TOP_FOLDER)
+
+NODE_NAME=efortunes_core
+AC_SUBST(NODE_NAME)
+
+HOST_NAME=`hostname`
+AC_SUBST(HOST_NAME)
+
+MAGIC_COOKIE=efortunes_cookie
+AC_SUBST(MAGIC_COOKIE)
+
+MNESIA_DIR=/home/mario/MnesiaData
+AC_SUBST(MNESIA_DIR)
+
+ALTERNATIVE_MNESIA_NODES="storage1@`hostname` storage2@`hostname`"
+AC_SUBST(ALTERNATIVE_MNESIA_NODES)
+
+YAWS_DIR=/home/mario/Software/yaws
+YAWS_INCLUDE=$YAWS_DIR\/include
+AC_SUBST(YAWS_INCLUDE)
+
+AC_OUTPUT(
+Makefile 
+src/Makefile
+bin/efortunes_run.sh
+etc/yaws.conf
+)

@@ -1,0 +1,9 @@
+Here the TODO list for 0.2:
+
+  * Bug fixing ;)
+  * Add the capability to import/export from/to regular fortunes files
+  * Add search interface
+  * Improve the web interface ( well, this is a must ;) )
+  * Add an user profiles management tool (only admin/admin atm)
+  * Create an standalone, deployable daemon of efortunes
+  * Documentation and code-cleaning
