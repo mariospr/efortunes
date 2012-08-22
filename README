@@ -1,9 +1,16 @@
 ----------------------------------------------
 Program: efortunes
 Version: 0.1
+ Source: https://github.com/mariospr/efortunes
  Author: Mario Sanchez Prada
  E-mail: msanchez@igalia.com
 Website: http://mariospr.org
 ----------------------------------------------
 
-Source code at https://github.com/mariospr/efortunes
+A distributed, scalable and fault-tolerant fortunes server developed
+in Erlang as a pet project to experiment with Erlang and Yaws to
+make scalable web applications.
+
+Disclaimer: This is an old Erlang project from 2006 and there are
+no plans yet to keep working on it, just uploading it to a git repo
+to avoid losing the code forever :–)
